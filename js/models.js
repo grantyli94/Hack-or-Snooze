@@ -19,6 +19,7 @@ class Story {
     this.url = url;
     this.username = username;
     this.createdAt = createdAt;
+    this.favorite = false;
   }
 
   /** Parses hostname out of URL and returns it. */
@@ -122,7 +123,7 @@ class User {
     this.createdAt = createdAt;
 
     // instantiate Story instances for the user's favorites and ownStories
-    this.favorites = favorites.map(s => new Story(s));
+    this.favorites = favorites.map(s => new Story(s)); // why map and create new Story?
     this.ownStories = ownStories.map(s => new Story(s));
 
     // store the login token on the user so it's easy to find for API calls.
@@ -181,6 +182,31 @@ class User {
       },
       response.data.token
     );
+  }
+
+  /* add docstring */
+
+  async addFavorite(story) { // { storyId, title, author, url, username, createdAt }
+    this.favorites.push(story);
+    story.favorite = true;
+    let token = currentUser.loginToken;
+    // add base_URL
+    let response = await axios.post(`${BASE_URL}/users/${this.username}/favorites/${story.storyId}`, {
+      token
+    }); 
+  }
+
+  async removeFavorite(story) {
+    let token = currentUser.loginToken;
+    for (let i = 0; i < currentUser.favorites.length; i++) {
+      if (currentUser.favorites[i].storyId === story.storyId) {
+        currentUser.favorites.splice(i, 1);
+      }
+    }
+    let response = await axios.delete(`${BASE_URL}/users/${this.username}/favorites/${story.storyId}`, 
+    { data: {
+      token
+    }}); 
   }
 
   /** When we already have credentials (token & username) for a user,

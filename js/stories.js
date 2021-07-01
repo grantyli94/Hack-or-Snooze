@@ -25,6 +25,7 @@ function generateStoryMarkup(story) {
   const hostName = story.getHostName();
   return $(`
       <li id="${story.storyId}">
+        <span class="star"><i class="fa-star far"></i></span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -69,3 +70,23 @@ async function submitNewStory(evt) {
 }
 
 $submitForm.on("submit", submitNewStory);
+
+/* docstring handles clicking on star */
+
+$allStoriesList.on("click", ".star", toggleFavorite);
+
+function toggleFavorite(evt) {
+  evt.preventDefault(); // evt = span
+  let $storyId = $(evt.target).closest('li').attr('id');
+  let toggleStory;
+
+  for (let story of storyList.stories) {
+    if (story.storyId === $storyId) {
+      toggleStory = story;
+    }
+  }
+  
+  !(toggleStory.favorite) 
+    ? currentUser.addFavorite(toggleStory) 
+    : currentUser.removeFavorite(toggleStory);
+}
