@@ -51,21 +51,21 @@ function putStoriesOnPage() {
   $allStoriesList.show();
 }
 
-//callback function for clicking on submit story button
+/** Takes in form values for story submission and creates new Story instance. Prepends new story 
+ * to top of story list and hides submission form
+ */
 async function submitNewStory(evt) {
   evt.preventDefault();
   let author = $("#author-name").val();
   let title = $("#story-title").val();
   let url = $("#story-url").val();
-  let story = {author, title, url} //TODO: add user
   
-
-  let newStory = await storyList.addStory(currentUser, story); // returns a new instance of story
-  console.log(newStory instanceof Story);
-  // const $story = generateStoryMarkup(story);
+  let story = {author, title, url};
+  let newStory = await storyList.addStory(currentUser, story);
   
-  // $allStoriesList.append($story); // TODO: prepend
-  // // TODO: hide form after hitting submit
+  const $story = generateStoryMarkup(newStory); //need to separate UI?
+  $allStoriesList.prepend($story);
+  $submitForm.hide();
 }
 
-$submitButton.on("submit", submitNewStory);
+$submitForm.on("submit", submitNewStory);

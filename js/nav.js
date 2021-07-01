@@ -26,7 +26,6 @@ function navLoginClick(evt) {
 $navLogin.on("click", navLoginClick);
 
 /** When a user first logins in, update the navbar to reflect that. */
-//TODO: unhide submit, favorties, and my stories buttons
 function updateNavOnLogin() {
   console.debug("updateNavOnLogin");
   $mainNavLinks.show();
@@ -35,10 +34,10 @@ function updateNavOnLogin() {
   $navUserProfile.text(`${currentUser.username}`).show();
 }
 
+/** When user clicks on "submit" in nav bar, show the submit story form */
 function navSubmitStoryClick(evt) {
   evt.preventDefault();
   $submitForm.show();
-  
 }
 
 $navSubmit.on("click", navSubmitStoryClick)
