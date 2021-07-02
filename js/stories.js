@@ -25,7 +25,7 @@ function generateStoryMarkup(story) {
   const hostName = story.getHostName();
   return $(`
       <li id="${story.storyId}">
-        <span class="star"><i class="fa-star far"></i></span>
+        <span class="star"><i class="fa-star ${story.star}"></i></span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -76,9 +76,10 @@ $submitForm.on("submit", submitNewStory);
 $allStoriesList.on("click", ".star", toggleFavorite);
 
 function toggleFavorite(evt) {
-  evt.preventDefault(); // evt = span
+  evt.preventDefault(); // evt = i
   let $storyId = $(evt.target).closest('li').attr('id');
   let toggleStory;
+  console.log(evt.target)
 
   for (let story of storyList.stories) {
     if (story.storyId === $storyId) {
@@ -86,7 +87,23 @@ function toggleFavorite(evt) {
     }
   }
   
-  !(toggleStory.favorite) 
-    ? currentUser.addFavorite(toggleStory) 
-    : currentUser.removeFavorite(toggleStory);
+  if (!toggleStory.favorite) {
+    currentUser.addFavorite(toggleStory);
+    $(evt.target).addClass("fas").removeClass("far");
+    toggleStory.star = "fas";
+  }
+  else {
+    currentUser.removeFavorite(toggleStory);
+    $(evt.target).addClass("far").removeClass("fas");
+    toggleStory.star = "far";
+  }
+  
+}
+
+function putFavoritesListOnPage() {
+  let favorites = currentUser.favorites;
+  for (let favorite of favorites) {
+    const $favorite = generateStoryMarkup(favorite);
+    $allFavoritesList.append($favorite);
+  }
 }

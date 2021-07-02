@@ -20,6 +20,7 @@ class Story {
     this.username = username;
     this.createdAt = createdAt;
     this.favorite = false;
+    this.star = "far";
   }
 
   /** Parses hostname out of URL and returns it. */
@@ -198,6 +199,7 @@ class User {
 
   async removeFavorite(story) {
     let token = currentUser.loginToken;
+    story.favorite = false;
     for (let i = 0; i < currentUser.favorites.length; i++) {
       if (currentUser.favorites[i].storyId === story.storyId) {
         currentUser.favorites.splice(i, 1);
