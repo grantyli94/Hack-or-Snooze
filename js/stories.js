@@ -20,14 +20,20 @@ async function getAndShowStoriesOnStart() {
  * Returns the markup for the story.
  */
 function generateStoryMarkup(story) {
-  // console.debug("generateStoryMarkup", story);
+  let hiddenToggle = "hidden";
+  let starToggle;
+  
   if (currentUser) {
-    let starToggle = (checkFavorite(story)) ? "fas" : "far"
-    const hostName = story.getHostName();
-    // always star, but hidden if user doesn't exist
-    return $(`
+    starToggle = checkFavorite(story) ? "fas" : "far"
+    hiddenToggle = "";
+  }
+  
+  const hostName = story.getHostName();
+  // always star, but hidden if user doesn't exist
+  return $(`
       <li id="${story.storyId}">
-        <span class="star"><i class="fa-star ${starToggle}"></i></span>
+        <span class="trash hidden"><i class="fas fa-trash-alt"></i></span>
+        <span class="star ${hiddenToggle}"><i class="fa-star ${starToggle}"></i></span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -36,21 +42,6 @@ function generateStoryMarkup(story) {
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
-  }
-  else {
-    const hostName = story.getHostName();
-    
-    return $(`
-    <li id="${story.storyId}">
-      <a href="${story.url}" target="a_blank" class="story-link">
-        ${story.title}
-      </a>
-      <small class="story-hostname">(${hostName})</small>
-      <small class="story-author">by ${story.author}</small>
-      <small class="story-user">posted by ${story.username}</small>
-    </li>
-  `);
-  }
 }
 
 /** Checks if a story is in the user's favorites array */
@@ -89,7 +80,9 @@ async function submitNewStory(evt) {
   let story = {author, title, url};
   let newStory = await storyList.addStory(currentUser, story);
   
-  const $story = generateStoryMarkup(newStory); //need to separate UI?
+  currentUser.ownStories.push(newStory)
+
+  const $story = generateStoryMarkup(newStory);
   $allStoriesList.prepend($story);
   $submitForm.hide();
 }
@@ -134,4 +127,25 @@ function findStory(storyId) {
     }
   }
   return foundStory;
+}
+
+$(".stories-container").on("click", ".trash", deleteStory);
+
+/**  */
+function putUserStoriesOnPage() {
+  $userStoriesList.empty()
+  let userStories = currentUser.ownStories;
+  for (let story of userStories) {
+    let $story = generateStoryMarkup(story);
+    $story[0].children[0].classList.remove("hidden");
+    $userStoriesList.append($story);
+  }
+}
+
+async function deleteStory(evt) {
+  console.debug("deleteStory")
+  let $storyId = $(evt.target).closest('li').attr('id');
+  await currentUser.deleteFromServer($storyId);
+  currentUser.ownStories = currentUser.ownStories.filter(story => story.storyId !== $storyId);
+  putUserStoriesOnPage();
 }

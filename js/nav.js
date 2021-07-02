@@ -11,6 +11,7 @@ function navAllStories(evt) {
   hidePageComponents();
   putStoriesOnPage();
   $allFavoritesList.hide();
+  $userStoriesList.hide();
 }
 
 $body.on("click", "#nav-all", navAllStories);
@@ -49,6 +50,7 @@ $navSubmit.on("click", navSubmitStoryClick)
 function navFavoritesClick(evt) {
   evt.preventDefault();
   $allStoriesList.hide();
+  $userStoriesList.hide();
   $allFavoritesList.empty();
   putFavoritesListOnPage();
   $allFavoritesList.show();
@@ -56,4 +58,10 @@ function navFavoritesClick(evt) {
 
 $navFavorites.on("click", navFavoritesClick)
 
+function navMyStories(evt) {
+  $allStoriesList.hide();
+  putUserStoriesOnPage();
+  $userStoriesList.show();
+}
 
+$navMyStories.on("click",navMyStories);
