@@ -6,6 +6,7 @@ let storyList;
 /** Get and show stories when site first loads. */
 
 async function getAndShowStoriesOnStart() {
+  console.debug("getAndShowStoriesOnStart");
   storyList = await StoryList.getStories();
   $storiesLoadingMsg.remove();
 
@@ -19,28 +20,12 @@ async function getAndShowStoriesOnStart() {
  * Returns the markup for the story.
  */
 function generateStoryMarkup(story) {
-  console.debug("generateStoryMarkup", story);
-  console.log(currentUser.favorites)
-  
-  // let starToggle = currentUser.favorites.includes(story) ? "fas" : "far" 
-  // won't work because .includes() compares using ===, but .some() will work.. 
-  
-  function checkFavorite(story) {
-    return currentUser.favorites.some(function(storyItem){
-      return storyItem.storyId === story.storyId;
-    })
-  }
-
-  // function checkAvailability(arr, val) {
-  //   return arr.some(function(arrVal) {
-  //     return val === arrVal;
-  //   });
-  // }
-
-  let starToggle = (checkFavorite(story)) ? "fas" : "far"
-
-  const hostName = story.getHostName();
-  return $(`
+  // console.debug("generateStoryMarkup", story);
+  if (currentUser) {
+    let starToggle = (checkFavorite(story)) ? "fas" : "far"
+    const hostName = story.getHostName();
+    // always star, but hidden if user doesn't exist
+    return $(`
       <li id="${story.storyId}">
         <span class="star"><i class="fa-star ${starToggle}"></i></span>
         <a href="${story.url}" target="a_blank" class="story-link">
@@ -51,6 +36,29 @@ function generateStoryMarkup(story) {
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
+  }
+  else {
+    const hostName = story.getHostName();
+    
+    return $(`
+    <li id="${story.storyId}">
+      <a href="${story.url}" target="a_blank" class="story-link">
+        ${story.title}
+      </a>
+      <small class="story-hostname">(${hostName})</small>
+      <small class="story-author">by ${story.author}</small>
+      <small class="story-user">posted by ${story.username}</small>
+    </li>
+  `);
+  }
+}
+
+/** Checks if a story is in the user's favorites array */
+
+function checkFavorite(story) {
+  return currentUser.favorites.some(function(storyItem){
+    return storyItem.storyId === story.storyId;
+  })
 }
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
@@ -90,32 +98,23 @@ $submitForm.on("submit", submitNewStory);
 
 /** Click handler on star icon to add or remove a favorite story. Changes color of star based on favorite status */
 
-$(".stories-container").on("click", ".star", toggleFavorite);
-
 function toggleFavorite(evt) {
-  evt.preventDefault();
+  console.debug("toggleFavorite",evt);
   let $storyId = $(evt.target).closest('li').attr('id');
-  let toggleStory;
-
-  // Iterates over stories to find storyId that matches storyId from evt target
-  for (let story of storyList.stories) {
-    if (story.storyId === $storyId) {
-      toggleStory = story;
-    }
-  }
+  let story = findStory($storyId);
   
-  // Adds or removes story from favorites based on story.favorite attribute
-  if (!toggleStory.favorite) {
-    currentUser.addFavorite(toggleStory);
+  // Adds or removes story from favorites based on inclusion in favorites list
+  if (!checkFavorite(story)) {
+    currentUser.addFavorite(story);
     $(evt.target).addClass("fas").removeClass("far");
-    toggleStory.star = "fas";
   }
   else {
-    currentUser.removeFavorite(toggleStory);
+    currentUser.removeFavorite(story);
     $(evt.target).addClass("far").removeClass("fas");
-    toggleStory.star = "far";
   }
 }
+
+$(".stories-container").on("click", ".star", toggleFavorite);
 
 /** Grabs current user's favorite stories. Iterates over list and generates HTML markups for each and appends to DOM */
 function putFavoritesListOnPage() {
@@ -124,4 +123,15 @@ function putFavoritesListOnPage() {
     const $favorite = generateStoryMarkup(favorite);
     $allFavoritesList.append($favorite);
   }
+}
+
+/** Iterates over stories to find story that matches given storyId */ 
+function findStory(storyId) {
+  let foundStory;
+  for (let story of storyList.stories) { //.find() finds first element that satisifies callback function and returns it
+    if (story.storyId === storyId) {
+      foundStory = story;
+    }
+  }
+  return foundStory;
 }

@@ -31,6 +31,8 @@ function updateNavOnLogin() {
   console.debug("updateNavOnLogin");
   $mainNavLinks.show();
   $navLogin.hide();
+  $loginForm.hide();
+  $signupForm.hide();
   $navLogOut.show();
   $navUserProfile.text(`${currentUser.username}`).show();
 }
@@ -53,3 +55,5 @@ function navFavoritesClick(evt) {
 }
 
 $navFavorites.on("click", navFavoritesClick)
+
+

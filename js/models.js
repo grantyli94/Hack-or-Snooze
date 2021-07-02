@@ -144,6 +144,8 @@ class User {
       method: "POST",
       data: { user: { username, password, name } },
     });
+    
+    let { user } = response.data
 
     return new User(
       {
@@ -189,9 +191,8 @@ class User {
 
   async addFavorite(story) { // { storyId, title, author, url, username, createdAt }
     this.favorites.push(story);
-    story.favorite = true;
     let token = currentUser.loginToken;
-    let response = await axios.post(`${BASE_URL}/users/${this.username}/favorites/${story.storyId}`, {
+    await axios.post(`${BASE_URL}/users/${this.username}/favorites/${story.storyId}`, {
       token
     }); 
   }
@@ -200,13 +201,12 @@ class User {
 
   async removeFavorite(story) {
     let token = currentUser.loginToken;
-    story.favorite = false;
-    for (let i = 0; i < currentUser.favorites.length; i++) {
+    for (let i = 0; i < currentUser.favorites.length; i++) { // use array.filter to remove things from array
       if (currentUser.favorites[i].storyId === story.storyId) {
         currentUser.favorites.splice(i, 1);
       }
     }
-    let response = await axios.delete(`${BASE_URL}/users/${this.username}/favorites/${story.storyId}`, 
+    await axios.delete(`${BASE_URL}/users/${this.username}/favorites/${story.storyId}`, 
     { data: {
       token
     }}); 

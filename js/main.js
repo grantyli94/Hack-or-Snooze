@@ -22,6 +22,8 @@ const $navFavorites = $("#nav-favorites");
 const $navMyStories = $("#nav-my-stories");
 
 const $submitButton = $("#submit-button");
+const $loginButton = $("#login-button");
+const $createAccountButton = $("#create-account-button");
 
 
 
