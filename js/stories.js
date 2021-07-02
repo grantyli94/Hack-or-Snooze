@@ -18,11 +18,26 @@ async function getAndShowStoriesOnStart() {
  *
  * Returns the markup for the story.
  */
-
 function generateStoryMarkup(story) {
-  // console.debug("generateStoryMarkup", story);
+  console.debug("generateStoryMarkup", story);
+  console.log(currentUser.favorites)
   
-  let starToggle = currentUser.favorites.includes(story) ? "fas" : "far"
+  // let starToggle = currentUser.favorites.includes(story) ? "fas" : "far" 
+  // won't work because .includes() compares using ===, but .some() will work.. 
+  
+  function checkFavorite(story) {
+    return currentUser.favorites.some(function(storyItem){
+      return storyItem.storyId === story.storyId;
+    })
+  }
+
+  // function checkAvailability(arr, val) {
+  //   return arr.some(function(arrVal) {
+  //     return val === arrVal;
+  //   });
+  // }
+
+  let starToggle = (checkFavorite(story)) ? "fas" : "far"
 
   const hostName = story.getHostName();
   return $(`
