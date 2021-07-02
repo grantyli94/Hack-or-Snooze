@@ -129,8 +129,6 @@ function findStory(storyId) {
   return foundStory;
 }
 
-$(".stories-container").on("click", ".trash", deleteStory);
-
 /** Generates HTML markup for user's ownStories list and appends it to the DOM */
 function putUserStoriesOnPage() {
   $userStoriesList.empty()
@@ -145,9 +143,12 @@ function putUserStoriesOnPage() {
 /** When the trashcan icon is clicked in user's ownStories list, grabs evt.target's storyId. Updates the API to delete the story. Remove story from user's ownStories list
 */
 async function deleteStory(evt) {
-  console.debug("deleteStory")
+  console.debug("deleteStory");
   let $storyId = $(evt.target).closest('li').attr('id');
-  await currentUser.deleteFromServer($storyId);
-  currentUser.ownStories = currentUser.ownStories.filter(story => story.storyId !== $storyId);
+  await currentUser.removeStory($storyId);
+  currentUser.ownStories = currentUser.ownStories.filter(story => story.storyId !== $storyId); // put this in models
+  storyList = await StoryList.getStories(); // don't do this, delete from DOM instead
   putUserStoriesOnPage();
 }
+
+$(".stories-container").on("click", ".trash", deleteStory);

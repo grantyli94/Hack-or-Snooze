@@ -10,8 +10,6 @@ function navAllStories(evt) {
   console.debug("navAllStories", evt);
   hidePageComponents();
   putStoriesOnPage();
-  $allFavoritesList.hide();
-  $userStoriesList.hide();
 }
 
 $body.on("click", "#nav-all", navAllStories);
@@ -33,7 +31,6 @@ function updateNavOnLogin() {
   $mainNavLinks.show();
   $navLogin.hide();
   $loginForm.hide();
-  $signupForm.hide();
   $navLogOut.show();
   $navUserProfile.text(`${currentUser.username}`).show();
 }
@@ -49,8 +46,7 @@ $navSubmit.on("click", navSubmitStoryClick)
 /** When user clicks on "favorites", hides all stories and displays favorites list */
 function navFavoritesClick(evt) {
   evt.preventDefault();
-  $allStoriesList.hide();
-  $userStoriesList.hide();
+  hidePageComponents();
   $allFavoritesList.empty();
   putFavoritesListOnPage();
   $allFavoritesList.show();
@@ -60,7 +56,7 @@ $navFavorites.on("click", navFavoritesClick)
 
 /** When user clicks on "my stories", hides all stories and displays ownStories list */
 function navMyStories(evt) {
-  $allStoriesList.hide();
+  hidePageComponents();
   putUserStoriesOnPage();
   $userStoriesList.show();
 }

@@ -107,9 +107,7 @@ function saveUserCredentialsInLocalStorage() {
  * - generate the user profile part of the page
  */
 
-//TODO: hide login and signup forms
 function updateUIOnUserLogin() {
   console.debug("updateUIOnUserLogin");
-  putStoriesOnPage();
   updateNavOnLogin();
 }

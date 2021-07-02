@@ -213,10 +213,12 @@ class User {
   }
 
   /**  Removes story instance from user's ownStories list by submiting a DELETE request*/
-  async deleteFromServer(storyId) {
+  // add try/catch
+  async removeStory(storyId) {
     let token = currentUser.loginToken;
     await axios.delete(`${BASE_URL}/stories/${storyId}`, { data: { token } } )
-  } 
+    // update user's own stories
+  }
 
   /** When we already have credentials (token & username) for a user,
    *   we can log them in automatically. This function does that.

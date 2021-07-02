@@ -36,6 +36,8 @@ const $createAccountButton = $("#create-account-button");
 function hidePageComponents() {
   const components = [
     $allStoriesList,
+    $allFavoritesList,
+    $userStoriesList,
     $loginForm,
     $signupForm,
   ];
