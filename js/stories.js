@@ -131,7 +131,7 @@ function findStory(storyId) {
 
 $(".stories-container").on("click", ".trash", deleteStory);
 
-/**  */
+/** Generates HTML markup for user's ownStories list and appends it to the DOM */
 function putUserStoriesOnPage() {
   $userStoriesList.empty()
   let userStories = currentUser.ownStories;
@@ -142,6 +142,8 @@ function putUserStoriesOnPage() {
   }
 }
 
+/** When the trashcan icon is clicked in user's ownStories list, grabs evt.target's storyId. Updates the API to delete the story. Remove story from user's ownStories list
+*/
 async function deleteStory(evt) {
   console.debug("deleteStory")
   let $storyId = $(evt.target).closest('li').attr('id');
