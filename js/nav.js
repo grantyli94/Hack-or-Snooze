@@ -58,6 +58,7 @@ function navFavoritesClick(evt) {
 
 $navFavorites.on("click", navFavoritesClick)
 
+/** When user clicks on "my stories", hides all stories and displays ownStories list */
 function navMyStories(evt) {
   $allStoriesList.hide();
   putUserStoriesOnPage();
