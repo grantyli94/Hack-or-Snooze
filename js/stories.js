@@ -21,11 +21,13 @@ async function getAndShowStoriesOnStart() {
 
 function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
+  
+  let starToggle = currentUser.favorites.includes(story) ? "fas" : "far"
 
   const hostName = story.getHostName();
   return $(`
       <li id="${story.storyId}">
-        <span class="star"><i class="fa-star ${story.star}"></i></span>
+        <span class="star"><i class="fa-star ${starToggle}"></i></span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -71,22 +73,23 @@ async function submitNewStory(evt) {
 
 $submitForm.on("submit", submitNewStory);
 
-/* docstring handles clicking on star */
+/** Click handler on star icon to add or remove a favorite story. Changes color of star based on favorite status */
 
-$allStoriesList.on("click", ".star", toggleFavorite);
+$(".stories-container").on("click", ".star", toggleFavorite);
 
 function toggleFavorite(evt) {
-  evt.preventDefault(); // evt = i
+  evt.preventDefault();
   let $storyId = $(evt.target).closest('li').attr('id');
   let toggleStory;
-  console.log(evt.target)
 
+  // Iterates over stories to find storyId that matches storyId from evt target
   for (let story of storyList.stories) {
     if (story.storyId === $storyId) {
       toggleStory = story;
     }
   }
   
+  // Adds or removes story from favorites based on story.favorite attribute
   if (!toggleStory.favorite) {
     currentUser.addFavorite(toggleStory);
     $(evt.target).addClass("fas").removeClass("far");
@@ -97,9 +100,9 @@ function toggleFavorite(evt) {
     $(evt.target).addClass("far").removeClass("fas");
     toggleStory.star = "far";
   }
-  
 }
 
+/** Grabs current user's favorite stories. Iterates over list and generates HTML markups for each and appends to DOM */
 function putFavoritesListOnPage() {
   let favorites = currentUser.favorites;
   for (let favorite of favorites) {

@@ -185,17 +185,18 @@ class User {
     );
   }
 
-  /* add docstring */
+  /** Adds story instance to user's favorite list. Submits POST request to update favorites list */
 
   async addFavorite(story) { // { storyId, title, author, url, username, createdAt }
     this.favorites.push(story);
     story.favorite = true;
     let token = currentUser.loginToken;
-    // add base_URL
     let response = await axios.post(`${BASE_URL}/users/${this.username}/favorites/${story.storyId}`, {
       token
     }); 
   }
+
+/** Removes story instance from user's favorite list. Submits DELETE request to update favorites list */
 
   async removeFavorite(story) {
     let token = currentUser.loginToken;

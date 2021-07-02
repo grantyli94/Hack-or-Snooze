@@ -43,6 +43,7 @@ function navSubmitStoryClick(evt) {
 
 $navSubmit.on("click", navSubmitStoryClick)
 
+/** When user clicks on "favorites", hides all stories and displays favorites list */
 function navFavoritesClick(evt) {
   evt.preventDefault();
   $allStoriesList.hide();
